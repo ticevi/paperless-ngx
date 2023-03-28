@@ -180,7 +180,7 @@ class BogusMailBox(ContextManager):
             )
             self.messages = list(filter(lambda m: m.uid not in uid_list, self.messages))
         else:
-            raise Exception()
+            raise Exception
 
 
 def fake_magic_from_buffer(buffer, mime=False):
@@ -761,7 +761,7 @@ class TestMail(DirectoriesMixin, FileSystemAssertsMixin, TestCase):
         with self.assertRaisesRegex(
             MailError,
             "Error while authenticating account",
-        ) as context:
+        ):
             self.mail_account_handler.handle_mail_account(account)
 
     def test_error_skip_account(self):

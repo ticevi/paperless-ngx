@@ -263,10 +263,7 @@ class DocumentViewSet(
     def get_serializer(self, *args, **kwargs):
         super().get_serializer(*args, **kwargs)
         fields_param = self.request.query_params.get("fields", None)
-        if fields_param:
-            fields = fields_param.split(",")
-        else:
-            fields = None
+        fields = fields_param.split(",") if fields_param else None
         truncate_content = self.request.query_params.get("truncate_content", "False")
         serializer_class = self.get_serializer_class()
         kwargs.setdefault("context", self.get_serializer_context())
@@ -356,7 +353,7 @@ class DocumentViewSet(
         try:
             doc = Document.objects.get(pk=pk)
         except Document.DoesNotExist:
-            raise Http404()
+            raise Http404
 
         meta = {
             "original_checksum": doc.checksum,
@@ -420,7 +417,7 @@ class DocumentViewSet(
             response = self.file_response(pk, request, "inline")
             return response
         except (FileNotFoundError, Document.DoesNotExist):
-            raise Http404()
+            raise Http404
 
     @action(methods=["get"], detail=True)
     @method_decorator(cache_control(public=False, max_age=315360000))
@@ -436,14 +433,14 @@ class DocumentViewSet(
 
             return HttpResponse(handle, content_type="image/webp")
         except (FileNotFoundError, Document.DoesNotExist):
-            raise Http404()
+            raise Http404
 
     @action(methods=["get"], detail=True)
     def download(self, request, pk=None):
         try:
             return self.file_response(pk, request, "attachment")
         except (FileNotFoundError, Document.DoesNotExist):
-            raise Http404()
+            raise Http404
 
     def getNotes(self, doc):
         return [
@@ -466,7 +463,7 @@ class DocumentViewSet(
         try:
             doc = Document.objects.get(pk=pk)
         except Document.DoesNotExist:
-            raise Http404()
+            raise Http404
 
         currentUser = request.user
 
@@ -567,7 +564,7 @@ class UnifiedSearchViewSet(DocumentViewSet):
             elif "more_like_id" in self.request.query_params:
                 query_class = index.DelayedMoreLikeThisQuery
             else:
-                raise ValueError()
+                raise ValueError
 
             return query_class(
                 self.searcher,
@@ -604,12 +601,12 @@ class LogViewSet(ViewSet):
 
     def retrieve(self, request, pk=None, *args, **kwargs):
         if pk not in self.log_files:
-            raise Http404()
+            raise Http404
 
         filename = self.get_log_filename(pk)
 
         if not os.path.isfile(filename):
-            raise Http404()
+            raise Http404
 
         with open(filename) as f:
             lines = [line.rstrip() for line in f.readlines()]

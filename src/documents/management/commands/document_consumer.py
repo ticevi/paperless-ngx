@@ -153,7 +153,7 @@ def _consume_wait_unmodified(file: str) -> None:
             new_size = stat_data.st_size
         except FileNotFoundError:
             logger.debug(
-                f"File {file} moved while waiting for it to remain " f"unmodified.",
+                f"File {file} moved while waiting for it to remain unmodified.",
             )
             return
         if new_mtime == mtime and new_size == size:
@@ -287,10 +287,7 @@ class Command(BaseCommand):
         while not finished:
             try:
                 for event in inotify.read(timeout=timeout):
-                    if recursive:
-                        path = inotify.get_path(event.wd)
-                    else:
-                        path = directory
+                    path = inotify.get_path(event.wd) if recursive else directory
                     filepath = os.path.join(path, event.name)
                     notified_files[filepath] = monotonic()
 
