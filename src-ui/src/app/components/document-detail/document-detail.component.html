@@ -8,7 +8,7 @@
     <button type="button" class="btn btn-sm btn-outline-danger me-2 ms-auto" (click)="delete()" [disabled]="!userIsOwner">
         <svg class="buttonicon" fill="currentColor">
             <use xlink:href="assets/bootstrap-icons.svg#trash" />
-        </svg><span class="d-none d-lg-inline ps-1" i18n>Delete</span>
+        </svg><span class="d-none ps-1" [class.d-lg-inline]="!embedded" i18n>Delete</span>
     </button>
 
     <div class="btn-group me-2">
@@ -16,7 +16,7 @@
         <a [href]="downloadUrl" class="btn btn-sm btn-outline-primary">
             <svg class="buttonicon" fill="currentColor">
                 <use xlink:href="assets/bootstrap-icons.svg#download" />
-            </svg><span class="d-none d-lg-inline ps-1" i18n>Download</span>
+            </svg><span class="d-none ps-1" [class.d-lg-inline]="!embedded" i18n>Download</span>
         </a>
 
         <div class="btn-group" ngbDropdown role="group" *ngIf="metadata?.has_archive_version">
@@ -31,13 +31,13 @@
     <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="redoOcr()" [disabled]="!userCanEdit">
         <svg class="buttonicon" fill="currentColor">
             <use xlink:href="assets/bootstrap-icons.svg#arrow-counterclockwise" />
-        </svg><span class="d-none d-lg-inline ps-1" i18n>Redo OCR</span>
+        </svg><span class="d-none ps-1" [class.d-lg-inline]="!embedded" i18n>Redo OCR</span>
     </button>
 
     <button type="button" class="btn btn-sm btn-outline-primary me-2" (click)="moreLike()">
         <svg class="buttonicon" fill="currentColor">
             <use xlink:href="assets/bootstrap-icons.svg#diagram-3" />
-        </svg><span class="d-none d-lg-inline ps-1" i18n>More like this</span>
+        </svg><span class="d-none ps-1" [class.d-lg-inline]="!embedded" i18n>More like this</span>
     </button>
 
     <button type="button" class="btn btn-sm btn-outline-primary me-2" i18n-title title="Close" (click)="close()">
@@ -63,7 +63,7 @@
 
 
 <div class="row">
-    <div class="col-md-6 col-xl-4 mb-4">
+    <div class="mb-4" [class.col-md-6]="!embedded" [class.col-xl-4]="!embedded">
 
         <form [formGroup]='documentForm' (ngSubmit)="save()">
 
@@ -147,7 +147,7 @@
                     </ng-template>
                 </li>
 
-                <li [ngbNavItem]="DocumentDetailNavIDs.Preview" class="d-md-none">
+                <li [ngbNavItem]="DocumentDetailNavIDs.Preview" [class.d-md-none]="!embedded">
                     <a ngbNavLink i18n>Preview</a>
                     <ng-template ngbNavContent *ngIf="!pdfPreview.offsetParent">
                         <div class="position-relative">
@@ -198,7 +198,7 @@
         </form>
     </div>
 
-    <div class="col-md-6 col-xl-8 mb-3 d-none d-md-block position-relative" #pdfPreview>
+    <div class="col-md-6 col-xl-8 mb-3 d-none position-relative" [class.d-md-block]="!embedded" #pdfPreview>
         <ng-container *ngIf="getContentType() === 'application/pdf'">
             <div class="preview-sticky pdf-viewer-container" *ngIf="!useNativePdfViewer ; else nativePdfViewer">
                 <pdf-viewer [src]="{ url: previewUrl, password: password }" [original-size]="false" [show-borders]="true" [show-all]="true" [(page)]="previewCurrentPage" [render-text-mode]="2" (error)="onError($event)" (after-load-complete)="pdfPreviewLoaded($event)"></pdf-viewer>

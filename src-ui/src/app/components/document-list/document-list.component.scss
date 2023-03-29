@@ -1,4 +1,4 @@
-::ng-deep app-document-list app-page-header > div.mb-3 {
+::ng-deep app-document-list .col-7 app-page-header > div.mb-3 {
   margin-bottom: 0 !important;
 }
 
@@ -21,6 +21,17 @@ $paperless-card-breakpoints: (
   2000px: 9
 );
 
+$paperless-card-breakpoints-split-view: (
+  // 0: 2, // xs is manual for slim-sidebar
+  768px: 2, //md
+  992px: 3, //lg
+  1200px: 4, //xl
+  1400px: 5, // xxl
+  1600px: 6,
+  1800px: 6,
+  2000px: 6
+);
+
 .row-cols-paperless-cards {
   // xs, we dont want in .col-slim block
   > * {
@@ -36,6 +47,17 @@ $paperless-card-breakpoints: (
       }
     }
   }
+
+  &.split-view {
+    @each $width, $n_cols in $paperless-card-breakpoints-split-view {
+      @media(min-width: $width) {
+        > * {
+          flex: 0 0 auto;
+          width: calc(100% / $n-cols) !important;
+        }
+      }
+    }
+  }
 }
 
 ::ng-deep .col-slim .row-cols-paperless-cards {
@@ -44,6 +66,17 @@ $paperless-card-breakpoints: (
       > * {
         flex: 0 0 auto;
         width: calc(100% / ($n-cols + 1)) !important;
+      }
+    }
+  }
+
+  &.split-view {
+    @each $width, $n_cols in $paperless-card-breakpoints-split-view {
+      @media(min-width: $width) {
+        > * {
+          flex: 0 0 auto;
+          width: calc(100% / ($n-cols + 1)) !important;
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core'
+import { Component, OnInit, OnDestroy, ViewChild, Input } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { NgbModal, NgbNav, NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap'
@@ -71,6 +71,7 @@ export class DocumentDetailComponent
 
   networkActive = false
 
+  @Input()
   documentId: number
   document: PaperlessDocument
   metadata: PaperlessDocumentMetadata
@@ -129,6 +130,9 @@ export class DocumentDetailComponent
   PermissionType = PermissionType
   DocumentDetailNavIDs = DocumentDetailNavIDs
   activeNavID: number
+
+  @Input()
+  embedded: boolean = false
 
   constructor(
     private documentsService: DocumentService,
@@ -206,7 +210,9 @@ export class DocumentDetailComponent
       .pipe(
         takeUntil(this.unsubscribeNotifier),
         switchMap((paramMap) => {
-          const documentId = +paramMap.get('id')
+          const documentId = !this.embedded
+            ? +paramMap.get('id')
+            : this.documentId
           this.docChangeNotifier.next(documentId)
           return this.documentsService.get(documentId)
         })
@@ -295,17 +301,19 @@ export class DocumentDetailComponent
         },
       })
 
-    this.route.paramMap.subscribe((paramMap) => {
-      const section = paramMap.get('section')
-      if (section) {
-        const navIDKey: string = Object.keys(DocumentDetailNavIDs).find(
-          (navID) => navID.toLowerCase() == section
-        )
-        if (navIDKey) {
-          this.activeNavID = DocumentDetailNavIDs[navIDKey]
+    if (!this.embedded) {
+      this.route.paramMap.subscribe((paramMap) => {
+        const section = paramMap.get('section')
+        if (section) {
+          const navIDKey: string = Object.keys(DocumentDetailNavIDs).find(
+            (navID) => navID.toLowerCase() == section
+          )
+          if (navIDKey) {
+            this.activeNavID = DocumentDetailNavIDs[navIDKey]
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   ngOnDestroy(): void {
@@ -314,6 +322,7 @@ export class DocumentDetailComponent
   }
 
   onNavChange(navChangeEvent: NgbNavChangeEvent) {
+    if (this.embedded) return
     const [foundNavIDkey] = Object.entries(DocumentDetailNavIDs).find(
       ([, navIDValue]) => navIDValue == navChangeEvent.nextId
     )

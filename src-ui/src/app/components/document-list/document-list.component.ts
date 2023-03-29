@@ -71,6 +71,9 @@ export class DocumentListComponent
 
   private unsubscribeNotifier: Subject<any> = new Subject()
 
+  useSplitView: boolean = false
+  splitDocId: number
+
   get savedViewIsModified(): boolean {
     if (!this.list.activeSavedViewId || !this.unmodifiedSavedView) return false
     else {
