@@ -88,6 +88,10 @@ class MailRule(document_models.ModelWithOwner):
         FROM_NAME = 3, _("Use name (or mail address if not available)")
         FROM_CUSTOM = 4, _("Use correspondent selected below")
 
+    class ScanSubfolders(models.BooleanField):
+        SCAN_SUBFOLDERS = True
+        DONT_SCAN_SUBFOLDERS = False
+
     name = models.CharField(_("name"), max_length=256, unique=True)
 
     order = models.IntegerField(_("order"), default=0)
@@ -222,6 +226,11 @@ class MailRule(document_models.ModelWithOwner):
         blank=True,
         on_delete=models.SET_NULL,
         verbose_name=_("assign this correspondent"),
+    )
+
+    scan_subfolders = models.BooleanField(
+        _("scan subfolders"),
+        default=ScanSubfolders.DONT_SCAN_SUBFOLDERS
     )
 
     def __str__(self):

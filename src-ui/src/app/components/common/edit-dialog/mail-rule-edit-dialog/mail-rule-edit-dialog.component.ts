@@ -148,6 +148,7 @@ export class MailRuleEditDialogComponent extends EditDialogComponent<PaperlessMa
       name: new FormControl(null),
       account: new FormControl(null),
       folder: new FormControl('INBOX'),
+      scan_subfolders: new FormControl(false),
       filter_from: new FormControl(null),
       filter_to: new FormControl(null),
       filter_subject: new FormControl(null),

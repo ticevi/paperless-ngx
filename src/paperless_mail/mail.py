@@ -517,11 +517,21 @@ class MailAccountHandler(LoggingMixin):
     ):
 
         self.log("debug", f"Rule {rule}: Selecting folder {rule.folder}")
-
         try:
-            M.folder.set(rule.folder)
-        except MailboxFolderSelectError as err:
+            if rule.scan_subfolders:
+                self.log("debug", f"Processing {rule.folder} recursive")
+                total_processed_files = 0
+                for folder_info in M.folder.list():
+                    if rule.folder in folder_info.name:
+                        self.log("info", f"Entering folder: {folder_info.name}")
+                        M.folder.set(folder_info.name)
+                        total_processed_files += self.handle_mail_folder(M,rule)
+                return total_processed_files
+            else:
+                M.folder.set(rule.folder)
+                return self.handle_mail_folder(M,rule)
 
+        except MailboxFolderSelectError as err:
             self.log(
                 "error",
                 f"Unable to access folder {rule.folder}, attempting folder listing",
@@ -535,12 +545,16 @@ class MailAccountHandler(LoggingMixin):
                     "Exception during folder listing, unable to provide list folders: "
                     + str(e),
                 )
-
             raise MailError(
                 f"Rule {rule}: Folder {rule.folder} "
                 f"does not exist in account {rule.account}",
             ) from err
 
+    def handle_mail_folder(
+        self,
+        M: MailBox,
+        rule: MailRule,
+        ):
         criterias = make_criterias(rule)
 
         self.log(

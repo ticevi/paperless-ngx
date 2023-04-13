@@ -40,6 +40,8 @@ export interface PaperlessMailRule extends ObjectWithId {
 
   folder: string
 
+  scan_subfolders: boolean
+
   filter_from: string
 
   filter_to: string

@@ -8,6 +8,7 @@
             "name": "Gmail",
             "account": 2,
             "folder": "INBOX",
+            "scan_subfolders": false,
             "filter_from": null,
             "filter_to": null,
             "filter_subject": "[paperless]",
